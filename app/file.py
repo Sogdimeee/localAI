@@ -26,3 +26,4 @@ print("✅ Answer:", result['answer'])
 # pip install torch
 # pip install huggingface_hub
 # pip install hf_xet
+# python -m pip install django-cors-headers
