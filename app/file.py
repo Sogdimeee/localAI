@@ -1,30 +1,22 @@
+from openai import OpenAI
 
-# !pip install transformers
+client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="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",
+)
 
-from transformers import pipeline
-
-# Загружаем пайплайн для question-answering
-qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
-
-context = """
-Artificial Intelligence (AI) is a field of computer science focused on building smart machines capable of performing tasks that typically require human intelligence.
-AI is being increasingly applied in education, helping both teachers and students with personalized learning, grading automation, and intelligent tutoring systems.
-"""
-
-# Вопрос от пользователя
-question = "How does AI help in education?"
-
-# Получение ответа
-result = qa_pipeline(question=question, context=context)
-
-print("❓ Question:", question)
-print("📘 Context:", context)
-print("✅ Answer:", result['answer'])
-
-
-# pip install djangorestframework
-# pip install transformers
-# pip install torch
-# pip install huggingface_hub
-# pip install hf_xet
-# python -m pip install django-cors-headers
+completion = client.chat.completions.create(
+  extra_headers={
+    "HTTP-Referer": "<YOUR_SITE_URL>", # Optional. Site URL for rankings on openrouter.ai.
+    "X-Title": "<YOUR_SITE_NAME>", # Optional. Site title for rankings on openrouter.ai.
+  },
+  extra_body={},
+  model="deepseek/deepseek-r1-distill-qwen-32b:free",
+  messages=[
+    {
+      "role": "user",
+      "content": "What is the meaning of life?"
+    }
+  ]
+)
+print(completion.choices[0].message.content)

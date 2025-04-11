@@ -8,23 +8,26 @@ class AskQuestionView(APIView):
     def post(self, request):
         question = request.data.get('question')
 
-        if not question:
-            return Response({"error": "Missing 'question' in request"}, status=status.HTTP_400_BAD_REQUEST)
+        client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key="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",
+        )
 
-        try:
-            context_path = os.path.join(os.path.dirname(__file__), "context.txt")
-            with open(context_path, "r", encoding="utf-8") as f:
-                context = f.read()
-        except FileNotFoundError:
-            return Response({"error": "context.txt not found"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        bot = QuestionAnsweringBot()
-        answer = bot.ask(question, context)
-
-        print(answer)
-
-        bot2 = QuestionAnsweringBot2()
-        answer = bot2.ask(answer)
+        completion = client.chat.completions.create(
+            extra_headers={
+                "HTTP-Referer": "<YOUR_SITE_URL>",  # Optional. Site URL for rankings on openrouter.ai.
+                "X-Title": "<YOUR_SITE_NAME>",  # Optional. Site title for rankings on openrouter.ai.
+            },
+            extra_body={},
+            model="deepseek/deepseek-r1-distill-qwen-32b:free",
+            messages=[
+                {
+                    "role": "user",
+                    "content": "What is the meaning of life?"
+                }
+            ]
+        )
+        answer = completion.choices[0].message.content
 
 
         return Response({"question": question, "answer": answer}, status=status.HTTP_200_OK)
