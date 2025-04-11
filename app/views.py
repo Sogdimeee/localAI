@@ -23,7 +23,7 @@ class AskQuestionView(APIView):
             messages=[
                 {
                     "role": "user",
-                    "content": "What is the meaning of life?"
+                    "content": question
                 }
             ]
         )
