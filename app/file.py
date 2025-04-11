@@ -22,6 +22,7 @@ print("📘 Context:", context)
 print("✅ Answer:", result['answer'])
 
 
+# pip install djangorestframework
 # pip install transformers
 # pip install torch
 # pip install huggingface_hub
